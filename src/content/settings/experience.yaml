@@ -1,0 +1,47 @@
+heading: Work Experience & History
+subtitle: Over 6+ years crafting high-impact digital products, SaaS platforms, and enterprise design systems.
+jobs:
+  - initials: NX
+    role: Senior UI/UX Designer
+    company: Nexus Analytics
+    employmentType: Full-time
+    period: 2022 — Present
+    current: true
+    logoColor: dark
+    description: Leading end-to-end product design for flagship cloud analytics platform used by 80,000+ data engineers and PMs worldwide. Built enterprise multi-brand design system from scratch.
+    highlights:
+      - Improved user task completion efficiency by 34% across core reporting workflows
+      - Architected tokenized Figma system adopting modern WCAG 2.1 AA standards
+    tags:
+      - B2B SaaS
+      - Design Systems
+      - UX Research
+      - Figma
+  - initials: SY
+    role: Product Designer
+    company: Synapse AI Labs
+    employmentType: Contract / Remote
+    period: 2020 — 2022
+    current: false
+    logoColor: amber
+    description: Designed intelligent conversational interfaces and predictive data visualization tools for automated customer intelligence pipelines.
+    highlights:
+      - Scaled weekly active retention by 22% through revamped prompt engineering editor
+      - Created interactive micro-prototypes and high-fidelity animation guidelines
+    tags:
+      - AI Interfaces
+      - Prototyping
+      - Web & Mobile
+  - initials: KV
+    role: UI/UX Designer
+    company: Kinetix Creative Studio
+    employmentType: Full-time
+    period: 2018 — 2020
+    current: false
+    logoColor: slate
+    description: Delivered bespoke e-commerce experiences and responsive web platforms for 18+ direct-to-consumer and fintech clients across Asia-Pacific.
+    highlights: []
+    tags:
+      - E-Commerce
+      - Wireframing
+      - Client Delivery

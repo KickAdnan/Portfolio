@@ -1,0 +1,145 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works');
+  return works.map((work) => ({ params: { slug: work.id }, props: { work } }));
+}
+
+type Props = { work: CollectionEntry<'works'> };
+
+const { work } = Astro.props;
+const d = work.data;
+const { Content } = await render(work);
+
+const works = (await getCollection('works')).sort((a, b) => a.data.order - b.data.order);
+const idx = works.findIndex((w) => w.id === work.id);
+const next = works[(idx + 1) % works.length];
+
+const initials = (d.quoteAuthor || '')
+  .split(' ')
+  .map((part) => part[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+<Base title={`${d.headline || d.title} — Adnan F. Muhammad`}>
+  <main class="w-full max-w-[880px] bg-white rounded-[36px] shadow-[0_24px_60px_rgba(15,23,42,0.1)] border border-black/[0.06] px-6 sm:px-12 md:px-16 pt-10 pb-20 relative my-auto">
+    <header class="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-neutral-100 mb-10">
+      <a
+        href="/works"
+        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-all group"
+      >
+        <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <span>Back to Works</span>
+      </a>
+    </header>
+
+    <section class="mb-12">
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-neutral-900 leading-[1.12] mb-5">{d.headline || d.title}</h1>
+      <p class="text-lg md:text-xl text-neutral-600 leading-relaxed font-normal max-w-3xl mb-8">{d.description}</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-neutral-50/80 border border-neutral-100 text-xs text-neutral-600">
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Role</span>
+          <span class="font-medium text-neutral-900">{d.role || '—'}</span>
+        </div>
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Client</span>
+          <span class="font-medium text-neutral-900">{d.client || '—'}</span>
+        </div>
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Duration</span>
+          <span class="font-medium text-neutral-900">{d.duration || '—'}</span>
+        </div>
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Core Stack</span>
+          <span class="font-medium text-neutral-900">{d.stack || '—'}</span>
+        </div>
+      </div>
+    </section>
+
+    {d.thumbnail && (
+      <section aria-label="Product Interface Mockup" class="mb-16">
+        <img src={d.thumbnail} alt={`${d.title} interface preview`} class="w-full h-auto rounded-2xl border border-slate-800 shadow-2xl" loading="lazy" />
+      </section>
+    )}
+
+    <article class="case-study-body">
+      <Content />
+    </article>
+
+    {d.quote && (
+      <section class="mt-14">
+        <div class="p-8 rounded-2xl bg-gradient-to-r from-orange-50/50 via-neutral-50 to-neutral-50 border-l-4 border-l-orange-500 border border-neutral-200/80">
+          <blockquote class="text-base sm:text-lg text-neutral-800 font-medium italic leading-relaxed mb-4">"{d.quote}"</blockquote>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-neutral-900 text-white font-bold flex items-center justify-center text-xs">{initials}</div>
+            <div>
+              <div class="text-xs font-bold text-neutral-900">{d.quoteAuthor}</div>
+              <div class="text-[11px] text-neutral-500">{d.quoteRole}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <nav class="mt-16 pt-8 border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <a href="/works" class="text-xs font-mono text-neutral-500 hover:text-neutral-900 flex items-center gap-1.5 transition-colors"><span>←</span> All Case Studies</a>
+      <a
+        href={`/works/${next.id}`}
+        class="group flex items-center gap-3 p-3 px-5 rounded-full bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/80 transition-all"
+      >
+        <div class="text-right">
+          <div class="text-[10px] font-mono uppercase text-neutral-400">Next Case Study</div>
+          <div class="text-xs font-bold text-neutral-900 group-hover:text-emerald-700 transition-colors">{next.data.title}</div>
+        </div>
+        <div class="w-7 h-7 rounded-full bg-white flex items-center justify-center border border-neutral-200 text-neutral-700 group-hover:translate-x-0.5 transition-transform">→</div>
+      </a>
+    </nav>
+  </main>
+</Base>
+
+<style is:global>
+  /* Prose styling for markdoc content (no typography plugin on the CDN build) */
+  .case-study-body { color: #525252; font-size: 1rem; line-height: 1.7; counter-reset: cs-h2; }
+  .case-study-body > * + * { margin-top: 1rem; }
+  .case-study-body h2 {
+    counter-increment: cs-h2;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    color: #171717;
+    margin-top: 2.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .case-study-body h2::before {
+    content: counter(cs-h2, decimal-leading-zero) " / ";
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #a3a3a3;
+    margin-bottom: 0.5rem;
+  }
+  .case-study-body h3 { font-size: 1.05rem; font-weight: 700; color: #171717; margin-top: 1.75rem; margin-bottom: 0.4rem; }
+  .case-study-body strong { color: #171717; font-weight: 600; }
+  .case-study-body ul, .case-study-body ol { padding-left: 1.25rem; }
+  .case-study-body ul { list-style: disc; }
+  .case-study-body ol { list-style: decimal; }
+  .case-study-body li + li { margin-top: 0.4rem; }
+  .case-study-body li::marker { color: #a3a3a3; }
+  .case-study-body a { color: #d97706; text-decoration: underline; }
+  .case-study-body img { border-radius: 1rem; margin: 2rem 0; }
+  .case-study-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: #f5f5f5;
+    padding: 0.15em 0.4em;
+    border-radius: 0.375rem;
+  }
+</style>

@@ -1,0 +1,168 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const raw = Astro.url.pathname;
+const pathname = raw.endsWith('/') && raw !== '/' ? raw.slice(0, -1) : raw;
+const group =
+  pathname.startsWith('/writing') ? 'writing'
+  : pathname.startsWith('/contacts') ? 'contacts'
+  : 'about';
+const isAboutLanding = group === 'about' && ['/', '/experience', '/works'].includes(pathname);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <script is:inline src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script is:inline>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+              serif: ['Newsreader', 'Georgia', 'Cambria', 'serif'],
+              mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace'],
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style is:global>
+      /* ---- Shared background treatment (pinned across every page) ----
+         Both layers are position:fixed and sized to the viewport (not the body),
+         so the same gradient always fills the screen and never scrolls. */
+      body { position: relative; }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-color: #fca772;
+        background-image:
+          radial-gradient(circle at 50% 0%, #8ae4f0 0%, #a4e4e9 20%, #f7d2a6 50%, #f6a171 80%, #ef825a 100%);
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-image: radial-gradient(rgba(0, 0, 0, 0.12) 1.25px, transparent 1.25px);
+        background-size: 14px 14px;
+        pointer-events: none;
+        opacity: 0.65;
+      }
+
+      .card-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12); }
+      .card-shadow-lg {
+        box-shadow:
+          0 25px 70px -15px rgba(28, 25, 23, 0.08),
+          0 10px 25px -10px rgba(28, 25, 23, 0.04),
+          0 0 0 1px rgba(255, 255, 255, 0.85) inset;
+      }
+      .dark-panel-glow { box-shadow: 0 0 50px -12px rgba(6, 182, 212, 0.18), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12); }
+
+      /* ---- Navigation active states ---- */
+      .tri-active { background:#fff; color:#171717; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+      .tri-inactive { color:#737373; font-weight:500; }
+      .dock-active { background-color:#262626; color:#fff; }
+
+      /* ---- Toast ---- */
+      #toast {
+        position: fixed;
+        bottom: 5.75rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(8px);
+        background: #171717;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 0.6rem 1.15rem;
+        border-radius: 9999px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.28);
+        z-index: 60;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .18s ease, transform .18s ease;
+        max-width: 90vw;
+        text-align: center;
+      }
+      #toast.toast-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+  </head>
+  <body class="font-sans text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white">
+    <div class="flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+      <slot />
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Persistent floating navigation dock -->
+    <footer class="fixed bottom-6 z-50 flex justify-center w-full px-4 pointer-events-none">
+      <nav class="pointer-events-auto bg-neutral-950/95 backdrop-blur-md text-white px-3 py-2 rounded-full flex items-center gap-1 sm:gap-2 shadow-2xl border border-white/10">
+        <div class="flex items-center text-[13px] font-medium text-neutral-300">
+          <a href="/" data-dock-link data-group="about" class:list={['px-3.5 py-1.5 rounded-full transition-colors', group === 'about' && 'dock-active']}>About</a>
+          <a href="/writing" data-dock-link data-group="writing" class:list={['px-3.5 py-1.5 rounded-full transition-colors', group === 'writing' && 'dock-active']}>Writing</a>
+          <!-- Playground hidden for now — restore the link when the page ships -->
+        </div>
+        <a href="/contacts" class="bg-white hover:bg-neutral-100 text-neutral-950 text-[12.5px] font-semibold px-4 py-1.5 rounded-full transition-colors shadow-sm ml-1">Contacts</a>
+      </nav>
+    </footer>
+
+    <script define:vars={{ group, pathname, isAboutLanding }}>
+      // Dock "About" remembers the last visited About page (Profile / Experience / Works)
+      try {
+        if (isAboutLanding) localStorage.setItem('dock-about', pathname);
+        const saved = localStorage.getItem('dock-about');
+        if (saved && saved.indexOf('//') === -1) {
+          const aboutLink = document.querySelector('[data-dock-link][data-group="about"]');
+          if (aboutLink) aboutLink.setAttribute('href', saved);
+        }
+      } catch (e) { /* no-op */ }
+
+      // Toast
+      let toastTimer;
+      window.toast = function (msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('toast-show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { el.classList.remove('toast-show'); }, 2200);
+      };
+
+      // Clipboard helpers
+      window.copyText = function (text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { toast('Copied to clipboard'); }).catch(function () { toast(text); });
+        } else {
+          toast(text);
+        }
+      };
+      window.copyEmail = function (email) { copyText(email); };
+
+      // Live WIB clock
+      function updateClock() {
+        const el = document.getElementById('live-time');
+        if (!el) return;
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const t = new Date(utc + 3600000 * 7);
+        const p = function (n) { return String(n).padStart(2, '0'); };
+        el.textContent = p(t.getHours()) + ':' + p(t.getMinutes()) + ':' + p(t.getSeconds()) + ' WIB';
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    </script>
+  </body>
+</html>

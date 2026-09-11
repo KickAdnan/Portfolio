@@ -1,0 +1,12 @@
+heading: Playground.
+description: Small interactive studies, tested outside client work. Most are still being built — starting with a live one below.
+demoTitle: Micro-interaction, in one press
+demoDescription: "Hold the button down. The compress-and-release is the same trigger → feedback → resolution → persistence loop from the SaaS micro-interactions piece."
+demoButton: Press and hold
+experiments:
+  - title: Generative Palette Tool
+    description: Type a mood, get a token-ready color system back.
+    icon: palette
+  - title: Cursor Trail Study
+    description: A small look at motion that follows intent instead of decorating it.
+    icon: bolt

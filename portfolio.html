@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adnan F. Muhammad — Portfolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          serif: ['Newsreader', 'Georgia', 'Cambria', 'serif'],
+          mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ---- Shared background treatment (unified + pinned across every page) ----
+     Both layers are position:fixed and sized to the viewport (not the body),
+     so the same gradient always fills the screen and never scrolls or
+     changes with a taller/shorter page's content. */
+  body { position: relative; }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background-color: #fca772;
+    background-image:
+      radial-gradient(circle at 50% 0%, #8ae4f0 0%, #a4e4e9 20%, #f7d2a6 50%, #f6a171 80%, #ef825a 100%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: radial-gradient(rgba(0, 0, 0, 0.12) 1.25px, transparent 1.25px);
+    background-size: 14px 14px;
+    pointer-events: none;
+    opacity: 0.65;
+  }
+
+  .card-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.12); }
+  .card-shadow-lg {
+    box-shadow:
+      0 25px 70px -15px rgba(28, 25, 23, 0.08),
+      0 10px 25px -10px rgba(28, 25, 23, 0.04),
+      0 0 0 1px rgba(255, 255, 255, 0.85) inset;
+  }
+  .dark-panel-glow { box-shadow: 0 0 50px -12px rgba(6, 182, 212, 0.18), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12); }
+
+  /* ---- Router helpers ---- */
+  .tri-active { background:#fff; color:#171717; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+  .tri-inactive { color:#737373; font-weight:500; }
+  .dock-active { background-color:#262626; color:#fff; }
+
+  /* ---- Toast ---- */
+  #toast {
+    position: fixed;
+    bottom: 5.75rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: #171717;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 0.6rem 1.15rem;
+    border-radius: 9999px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    z-index: 60;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+    max-width: 90vw;
+    text-align: center;
+  }
+  #toast.toast-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body class="font-sans text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white">
+
+<!-- PAGE: Profile (About > Profile) -->
+<section id="page-profile" class="app-page flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+<main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+<div class="w-full bg-[#f0f1f2] rounded-[36px] p-0.5 shadow-2xl shadow-black/10 overflow-hidden border border-white/40">
+<header class="flex justify-center items-center pt-2 pb-0 px-6">
+<nav class="flex items-center space-x-1 text-[13px] font-medium" data-purpose="card-tab-navigation">
+<button type="button" data-tri-tab data-goto="profile" onclick="goTo('profile')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Profile</button>
+<button type="button" data-tri-tab data-goto="experience" onclick="goTo('experience')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Experience</button>
+<button type="button" data-tri-tab data-goto="works" onclick="goTo('works')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Works</button>
+</nav>
+</header>
+<article class="bg-white rounded-[32px] p-8 sm:p-12 md:p-14 shadow-sm min-h-[580px] flex flex-col justify-between">
+<section class="flex flex-col sm:flex-row justify-between items-start gap-4" data-purpose="profile-header">
+<div class="flex flex-col">
+<div class="relative w-16 h-16 rounded-full overflow-hidden p-0.5 bg-gradient-to-b from-sky-300 via-amber-200 to-amber-500 shadow-inner mb-5">
+<img alt="Adnan F. Muhammad portrait" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzfiUQH_RTmIX9MDOTVdrTjPVpfWKrjpEjPif4b7VQZ_rLSP8OVKCn6UBVfX7BTFeJI4091iZTQvLbHBQmY1eE7DNMW-YzRcknLHbwFW6o79Yra7C5D0-jx3EqpVfupmNoo-_3wdCzXiOCtTDXTnh-v0vzzFQgVrXLAwhp9i_phNTd_tdl4LgQ4g4m3nYoWVaBuEM2Mo-06IzoM6TVehYDp_ABNUvpPfPJAbXbEShQZtgCp7ZB3DcT">
+</div>
+<span class="text-[13px] font-medium text-neutral-500 tracking-wide mb-1">UI/UX Designer</span>
+<h1 class="text-2xl sm:text-[26px] font-bold tracking-tight text-neutral-900">Adnan F. Muhammad</h1>
+</div>
+<div class="flex items-center space-x-2 pt-1">
+<div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-neutral-100/80 border border-neutral-200/60 text-[12px] font-medium text-neutral-700" data-purpose="availability-status">
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span>Available for work</span>
+</div>
+<span id="live-time" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full bg-neutral-100/80 border border-neutral-200/60 text-[12px] font-mono font-medium text-neutral-600">--:--:-- WIB</span>
+</div>
+</section>
+<div class="h-20 sm:h-28"></div>
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end" data-purpose="profile-overview">
+<div class="lg:col-span-8 flex flex-col space-y-4">
+<h2 class="text-xl sm:text-2xl font-bold leading-snug tracking-tight text-neutral-900 max-w-xl">
+Designed down to the last detail.<br class="hidden sm:inline">
+Built to actually move things forward.
+</h2>
+<p class="text-[13.5px] sm:text-[14px] leading-relaxed text-neutral-500 max-w-lg pt-1 font-normal">
+I design digital product and system that are clean, modern, and intentional but always with a signature touch that makes them feel distinctly crafted. Functional by principle, distinctive by habit.
+</p>
+<div class="flex items-center space-x-3 pt-3">
+<button type="button" onclick="goTo('contacts')" class="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm">
+Get in touch
+</button>
+<button type="button" onclick="toast('Resume link coming soon — plug in your PDF here.')" class="px-5 py-2.5 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm">
+My CV
+</button>
+</div>
+</div>
+<div class="lg:col-span-4 flex flex-col justify-end space-y-3.5 pb-1">
+<span class="text-[13px] font-normal text-neutral-400 block mb-1">Expertise</span>
+<div class="flex items-center space-x-3 text-neutral-900 font-semibold text-[14px]">
+<svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
+<circle cx="3" cy="4" r="1.5"></circle>
+<circle cx="8" cy="4" r="1.5"></circle>
+<circle cx="13" cy="4" r="1.5"></circle>
+<circle cx="5.5" cy="10" r="1.5"></circle>
+<circle cx="10.5" cy="10" r="1.5"></circle>
+</svg>
+<span>SaaS</span>
+</div>
+<div class="flex items-center space-x-3 text-neutral-900 font-semibold text-[14px]">
+<svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16">
+<path d="M8 2v12M2 8h12M4.5 4.5l7 7M11.5 4.5l-7 7" stroke-dasharray="1 3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>AI Product</span>
+</div>
+<div class="flex items-center space-x-3 text-neutral-900 font-semibold text-[14px]">
+<svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
+<circle cx="3" cy="3" r="1.2"></circle>
+<circle cx="8" cy="3" r="1.2"></circle>
+<circle cx="13" cy="3" r="1.2"></circle>
+<circle cx="3" cy="8" r="1.2"></circle>
+<circle cx="13" cy="8" r="1.2"></circle>
+<circle cx="3" cy="13" r="1.2"></circle>
+<circle cx="8" cy="13" r="1.2"></circle>
+<circle cx="13" cy="13" r="1.2"></circle>
+</svg>
+<span>B2B</span>
+</div>
+</div>
+</section>
+</article>
+</div>
+</main>
+</section>
+
+<!-- PAGE: Experience (About > Experience) -->
+<section id="page-experience" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+<main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+<div class="w-full bg-[#f0f1f2] rounded-[36px] p-0.5 shadow-2xl shadow-black/10 overflow-hidden border border-white/40">
+<header class="flex justify-center items-center pt-2 pb-0 px-6">
+<nav class="flex items-center space-x-1 text-[13px] font-medium" data-purpose="card-tab-navigation">
+<button type="button" data-tri-tab data-goto="profile" onclick="goTo('profile')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Profile</button>
+<button type="button" data-tri-tab data-goto="experience" onclick="goTo('experience')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Experience</button>
+<button type="button" data-tri-tab data-goto="works" onclick="goTo('works')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Works</button>
+</nav>
+</header>
+<article class="bg-white rounded-[32px] p-8 sm:p-12 md:p-14 shadow-sm min-h-[580px] flex flex-col justify-between">
+<div class="flex flex-col space-y-8">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-neutral-200/60">
+<div>
+<h1 class="text-2xl sm:text-[28px] font-bold tracking-tight text-neutral-900">Work Experience &amp; History</h1>
+<p class="text-[13.5px] sm:text-[14px] text-neutral-500 mt-1 max-w-xl">Over 6+ years crafting high-impact digital products, SaaS platforms, and enterprise design systems.</p>
+</div>
+<div class="flex items-center space-x-3 flex-shrink-0">
+<button type="button" onclick="toast('Resume link coming soon — plug in your PDF here.')" class="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm flex items-center space-x-1.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Download Resume</span>
+</button>
+</div>
+</div>
+<div class="space-y-6">
+<div class="p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-150">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-xl bg-neutral-900 text-white flex items-center justify-center font-bold text-sm shadow-sm">NX</div>
+<div>
+<div class="flex items-center space-x-2"><h3 class="font-bold text-neutral-900 text-[16px]">Senior UI/UX Designer</h3><span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Current</span></div>
+<p class="text-[13px] text-neutral-500 font-medium">Nexus Analytics • Full-time</p>
+</div>
+</div>
+<span class="text-[12.5px] font-mono font-medium text-neutral-500 bg-white px-3 py-1 rounded-full border border-neutral-200/60">2022 — Present</span>
+</div>
+<p class="text-[13.5px] text-neutral-600 leading-relaxed mb-4">Leading end-to-end product design for flagship cloud analytics platform used by 80,000+ data engineers and PMs worldwide. Built enterprise multi-brand design system from scratch.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px] text-neutral-600 mb-4">
+<div class="flex items-start space-x-2"><span class="text-emerald-600 font-bold">•</span><span>Improved user task completion efficiency by 34% across core reporting workflows</span></div>
+<div class="flex items-start space-x-2"><span class="text-emerald-600 font-bold">•</span><span>Architected tokenized Figma system adopting modern WCAG 2.1 AA standards</span></div>
+</div>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">B2B SaaS</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">Design Systems</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">UX Research</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">Figma</span>
+</div>
+</div>
+<div class="p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-150">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-sm">SY</div>
+<div><h3 class="font-bold text-neutral-900 text-[16px]">Product Designer</h3><p class="text-[13px] text-neutral-500 font-medium">Synapse AI Labs • Contract / Remote</p></div>
+</div>
+<span class="text-[12.5px] font-mono font-medium text-neutral-500 bg-white px-3 py-1 rounded-full border border-neutral-200/60">2020 — 2022</span>
+</div>
+<p class="text-[13.5px] text-neutral-600 leading-relaxed mb-4">Designed intelligent conversational interfaces and predictive data visualization tools for automated customer intelligence pipelines.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px] text-neutral-600 mb-4">
+<div class="flex items-start space-x-2"><span class="text-amber-600 font-bold">•</span><span>Scaled weekly active retention by 22% through revamped prompt engineering editor</span></div>
+<div class="flex items-start space-x-2"><span class="text-amber-600 font-bold">•</span><span>Created interactive micro-prototypes and high-fidelity animation guidelines</span></div>
+</div>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">AI Interfaces</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">Prototyping</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">Web &amp; Mobile</span>
+</div>
+</div>
+<div class="p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-150">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-xl bg-neutral-700 text-white flex items-center justify-center font-bold text-sm shadow-sm">KV</div>
+<div><h3 class="font-bold text-neutral-900 text-[16px]">UI/UX Designer</h3><p class="text-[13px] text-neutral-500 font-medium">Kinetix Creative Studio • Full-time</p></div>
+</div>
+<span class="text-[12.5px] font-mono font-medium text-neutral-500 bg-white px-3 py-1 rounded-full border border-neutral-200/60">2018 — 2020</span>
+</div>
+<p class="text-[13.5px] text-neutral-600 leading-relaxed mb-4">Delivered bespoke e-commerce experiences and responsive web platforms for 18+ direct-to-consumer and fintech clients across Asia-Pacific.</p>
+<div class="flex flex-wrap gap-1.5 pt-1">
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">E-Commerce</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">Wireframing</span>
+<span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">Client Delivery</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+</section>
+
+<!-- PAGE: Works (About > Works) -->
+<section id="page-works" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+<main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+<div class="w-full bg-[#f0f1f2] rounded-[36px] p-0.5 shadow-2xl shadow-black/10 overflow-hidden border border-white/40">
+<header class="flex justify-center items-center pt-2 pb-0 px-6">
+<nav class="flex items-center space-x-1 text-[13px] font-medium" data-purpose="card-tab-navigation">
+<button type="button" data-tri-tab data-goto="profile" onclick="goTo('profile')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Profile</button>
+<button type="button" data-tri-tab data-goto="experience" onclick="goTo('experience')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Experience</button>
+<button type="button" data-tri-tab data-goto="works" onclick="goTo('works')" class="px-5 py-2 rounded-t-xl transition-colors cursor-pointer">Works</button>
+</nav>
+</header>
+<article class="bg-white rounded-[32px] p-8 sm:p-12 md:p-14 shadow-sm min-h-[580px] flex flex-col justify-between">
+<div class="flex flex-col space-y-8">
+<div class="flex flex-col space-y-4 pb-6 border-b border-neutral-200/60">
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 pt-1">
+<div>
+<h1 class="text-2xl sm:text-[28px] font-bold tracking-tight text-neutral-900 leading-snug">Designed down to the last detail.<br class="hidden sm:inline"> Built to actually move things forward.</h1>
+<p class="text-[13.5px] sm:text-[14px] text-neutral-500 mt-2 max-w-xl leading-relaxed">A selection of high-impact SaaS platforms, generative AI interfaces, and systematic design foundations built from zero to scale.</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+<!-- Nexus Analytics -->
+<article onclick="goTo('case-study')" class="group rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-200 p-5 sm:p-6 flex flex-col cursor-pointer">
+<img src="https://placehold.co/800x450/0b0f19/34d399?font=inter&text=Nexus+Analytics" alt="Nexus Analytics product screenshot" class="w-full aspect-video object-cover rounded-xl mb-4 sm:mb-5">
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">B2B SaaS Platform</span>
+<div class="text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+<h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Nexus Analytics</h2>
+<p class="mt-1.5 text-[13px] text-neutral-500 leading-relaxed flex-1">End-to-end UX overhaul for modern enterprise data teams. Engineered an intuitive SQL query builder and interactive visualization engine used by 80k+ analysts.</p>
+<div class="pt-4 mt-5 border-t border-neutral-200/60 flex flex-wrap items-center gap-2">
+<span class="text-[11px] font-medium text-emerald-700 bg-emerald-50/80 px-2 py-0.5 rounded-md border border-emerald-200/40">+34% Efficiency</span>
+<span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">WCAG 2.1 AA</span>
+</div>
+</article>
+
+<!-- Synapse AI -->
+<article onclick="toast('Case study coming soon')" class="group rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-200 p-5 sm:p-6 flex flex-col cursor-pointer">
+<img src="https://placehold.co/800x450/160b26/c084fc?font=inter&text=Synapse+AI" alt="Synapse AI product screenshot" class="w-full aspect-video object-cover rounded-xl mb-4 sm:mb-5">
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">GenAI Studio</span>
+<div class="text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+<h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Synapse AI</h2>
+<p class="mt-1.5 text-[13px] text-neutral-500 leading-relaxed flex-1">Conversational playground, prompt evaluator, and multi-modal AI workflow studio built for engineers and machine learning product teams.</p>
+<div class="pt-4 mt-5 border-t border-neutral-200/60 flex flex-wrap items-center gap-2">
+<span class="text-[11px] font-medium text-purple-700 bg-purple-50/80 px-2 py-0.5 rounded-md border border-purple-200/40">+22% Weekly Retention</span>
+<span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">Next.js 14</span>
+</div>
+</article>
+
+<!-- Aura Pay -->
+<article onclick="toast('Case study coming soon')" class="group rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-200 p-5 sm:p-6 flex flex-col cursor-pointer">
+<img src="https://placehold.co/800x450/0c2326/2dd4bf?font=inter&text=Aura+Pay" alt="Aura Pay product screenshot" class="w-full aspect-video object-cover rounded-xl mb-4 sm:mb-5">
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">Fintech &amp; Mobile</span>
+<div class="text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+<h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Aura Pay</h2>
+<p class="mt-1.5 text-[13px] text-neutral-500 leading-relaxed flex-1">Next-generation financial dashboard and mobile app with zero-latency multi-currency settlement, card management, and automated expense insights.</p>
+<div class="pt-4 mt-5 border-t border-neutral-200/60 flex flex-wrap items-center gap-2">
+<span class="text-[11px] font-medium text-teal-700 bg-teal-50/80 px-2 py-0.5 rounded-md border border-teal-200/40">4.9★ App Store</span>
+<span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">PCI-DSS Level 1</span>
+</div>
+</article>
+
+<!-- Prism Design System -->
+<article onclick="toast('Case study coming soon')" class="group rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-200 p-5 sm:p-6 flex flex-col cursor-pointer">
+<img src="https://placehold.co/800x450/1c1917/fbbf24?font=inter&text=Prism+Design+System" alt="Prism Design System product screenshot" class="w-full aspect-video object-cover rounded-xl mb-4 sm:mb-5">
+<div class="flex items-start justify-between gap-3 mb-3">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">Design Infrastructure</span>
+<div class="text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+<h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Prism Design System</h2>
+<p class="mt-1.5 text-[13px] text-neutral-500 leading-relaxed flex-1">Unified multi-brand design tokens, accessible React UI kit, documentation hub, and automated synchronization pipeline between Figma and codebases.</p>
+<div class="pt-4 mt-5 border-t border-neutral-200/60 flex flex-wrap items-center gap-2">
+<span class="text-[11px] font-medium text-amber-700 bg-amber-50/80 px-2 py-0.5 rounded-md border border-amber-200/40">15k+ Community</span>
+<span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">Zero Regressions</span>
+</div>
+</article>
+
+</div>
+<div class="flex flex-col sm:flex-row justify-between items-center p-5 rounded-2xl bg-neutral-900 text-white mt-8 border border-neutral-800 gap-4">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div>
+<div><p class="text-[13px] font-semibold text-white">Have an ambitious project in mind?</p><p class="text-[12px] text-neutral-400">Let's craft high-retention digital experiences together.</p></div>
+</div>
+<button type="button" onclick="goTo('contacts')" class="px-4 py-2 rounded-full bg-white text-neutral-950 font-medium text-[12.5px] hover:bg-neutral-100 transition-colors whitespace-nowrap shadow-sm self-stretch sm:self-auto text-center cursor-pointer">Start a conversation →</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+</section>
+
+<!-- PAGE: Nexus Analytics case study (drills in from Works) -->
+<section id="page-case-study" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-6 sm:py-10 md:py-16 relative z-10">
+<main class="w-full max-w-[880px] bg-white rounded-[36px] shadow-[0_24px_60px_rgba(15,23,42,0.1)] border border-black/[0.06] px-6 sm:px-12 md:px-16 pt-10 pb-20 relative my-auto">
+<header class="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-neutral-100 mb-10">
+<button type="button" onclick="goTo('works')" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-all group">
+<svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Back to Works</span>
+</button>
+</header>
+<section class="mb-12">
+<h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-neutral-900 leading-[1.12] mb-5">Nexus Analytics: Reimagining Enterprise Data Exploration</h1>
+<p class="text-lg md:text-xl text-neutral-600 leading-relaxed font-normal max-w-3xl mb-8">Transforming complex multi-cloud SQL workflows into an intuitive visual canvas, elevating query execution efficiency by +34% for over 80,000 active enterprise data analysts.</p>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 rounded-2xl bg-neutral-50/80 border border-neutral-100 text-xs text-neutral-600">
+<div><span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Role</span><span class="font-medium text-neutral-900">Lead Product Designer</span></div>
+<div><span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Client</span><span class="font-medium text-neutral-900">Nexus Data Corp (SF)</span></div>
+<div><span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Duration</span><span class="font-medium text-neutral-900">7 Months (Q1–Q3 2024)</span></div>
+<div><span class="block text-[10px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Core Stack</span><span class="font-medium text-neutral-900">React, Canvas, Tailwind</span></div>
+</div>
+</section>
+<section aria-label="Product Interface Mockup" class="mb-16">
+<img src="https://placehold.co/1200x520/0b0f19/34d399?font=inter&text=Nexus+Analytics" alt="Nexus Analytics interactive SQL canvas preview" class="w-full h-auto rounded-2xl border border-slate-800 shadow-2xl">
+</section>
+<article class="space-y-16">
+<section>
+<div class="flex items-center gap-3 mb-3"><span class="text-xs font-mono font-bold tracking-wider text-neutral-400 uppercase">01 / Problem Space</span><div class="h-px flex-1 bg-neutral-100"></div></div>
+<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 mb-4">The Challenge: Cognitive Overload in Enterprise SQL</h2>
+<div class="space-y-4 text-neutral-600 text-base sm:text-lg leading-relaxed font-normal">
+<p>At Fortune 500 tech companies, enterprise data teams were bogged down by disparate siloed tools. Product managers, data engineers, and revenue operations analysts spent over 35% of their working hours manually copy-pasting raw SQL snippets across legacy terminals, resolving schema mismatch errors, and parsing unformatted results.</p>
+<p>The critical barrier was not data volume—it was <em>spatial ergonomics</em>. Complex JOIN relationships spanning hundreds of tables were impossible to visualize mentally, resulting in duplicated engineering hours, high compute costs from unoptimized queries, and significant onboarding delays for junior analysts.</p>
+</div>
+</section>
+<section>
+<div class="flex items-center gap-3 mb-3"><span class="text-xs font-mono font-bold tracking-wider text-neutral-400 uppercase">02 / The Solution</span><div class="h-px flex-1 bg-neutral-100"></div></div>
+<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 mb-6">Architectural Core &amp; Interaction Design</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div class="p-6 rounded-2xl bg-neutral-50/70 border border-neutral-200/80 hover:border-neutral-300 transition-all flex flex-col justify-between">
+<div><div class="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-neutral-800 shadow-sm mb-4"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div><h3 class="text-base font-bold text-neutral-900 mb-2">Visual SQL Builder</h3><p class="text-xs text-neutral-600 leading-relaxed">Drag-and-drop node canvas that translates schema blocks into performant SQL code bidirectionally in real-time.</p></div>
+<span class="inline-block mt-4 text-[11px] font-mono text-neutral-400">Zero syntax failure</span>
+</div>
+<div class="p-6 rounded-2xl bg-neutral-50/70 border border-neutral-200/80 hover:border-neutral-300 transition-all flex flex-col justify-between">
+<div><div class="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-neutral-800 shadow-sm mb-4"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div><h3 class="text-base font-bold text-neutral-900 mb-2">Zero-Latency Streaming</h3><p class="text-xs text-neutral-600 leading-relaxed">Virtualized table renderer capable of sorting and pivoting 500,000 active cell records at 60 frames per second.</p></div>
+<span class="inline-block mt-4 text-[11px] font-mono text-neutral-400">&lt; 16ms render loop</span>
+</div>
+<div class="p-6 rounded-2xl bg-neutral-50/70 border border-neutral-200/80 hover:border-neutral-300 transition-all flex flex-col justify-between">
+<div><div class="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-neutral-800 shadow-sm mb-4"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div><h3 class="text-base font-bold text-neutral-900 mb-2">Collaborative Branching</h3><p class="text-xs text-neutral-600 leading-relaxed">Multiplayer annotations, shared query snippets, and git-like branch exploration built straight into analysis worksheets.</p></div>
+<span class="inline-block mt-4 text-[11px] font-mono text-neutral-400">Multiplayer WebSockets</span>
+</div>
+</div>
+</section>
+<section>
+<div class="flex items-center gap-3 mb-3"><span class="text-xs font-mono font-bold tracking-wider text-neutral-400 uppercase">03 / Foundation</span><div class="h-px flex-1 bg-neutral-100"></div></div>
+<h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-neutral-900 mb-4">Systematic Accessibility &amp; Density Control</h2>
+<p class="text-neutral-600 text-base sm:text-lg leading-relaxed mb-6 font-normal">Enterprise power users require intense information density, while exploratory stakeholders demand breathing room. We established an adaptive token system featuring two interchangeable layout modes—<strong>Compact</strong> (32px row heights, mono hierarchy) and <strong>Comfortable</strong> (44px row heights with rich inline visualization pills).</p>
+<div class="p-5 rounded-2xl bg-neutral-50 border border-neutral-200/80">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-neutral-200/70">
+<div class="flex items-center gap-3"><span class="text-xs font-mono font-bold text-neutral-700">Token Engine</span><span class="text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold">Contrast 7.1:1 AAA</span></div>
+<div class="flex items-center gap-2"><button type="button" class="px-2.5 py-1 text-[11px] font-medium rounded-md bg-white shadow-sm border border-neutral-200 text-neutral-900">Comfortable</button><button type="button" onclick="toast('Switched to compact density')" class="px-2.5 py-1 text-[11px] font-medium rounded-md text-neutral-500 hover:text-neutral-900">Compact (Data Density)</button></div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 text-xs font-mono">
+<div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-[#0b0f19] border border-neutral-300"></div><div><div class="font-bold text-neutral-800 text-[11px]">Surface 900</div><div class="text-[10px] text-neutral-400">#0b0f19</div></div></div>
+<div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-emerald-500"></div><div><div class="font-bold text-neutral-800 text-[11px]">Primary Emerald</div><div class="text-[10px] text-neutral-400">#10b981</div></div></div>
+<div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-cyan-500"></div><div><div class="font-bold text-neutral-800 text-[11px]">Accent Cyan</div><div class="text-[10px] text-neutral-400">#06b6d4</div></div></div>
+<div class="flex items-center gap-2"><div class="w-6 h-6 rounded bg-amber-500"></div><div><div class="font-bold text-neutral-800 text-[11px]">Alert Amber</div><div class="text-[10px] text-neutral-400">#f59e0b</div></div></div>
+</div>
+</div>
+</section>
+<section>
+<div class="p-8 rounded-2xl bg-gradient-to-r from-orange-50/50 via-neutral-50 to-neutral-50 border-l-4 border-l-orange-500 border border-neutral-200/80">
+<blockquote class="text-base sm:text-lg text-neutral-800 font-medium italic leading-relaxed mb-4">"Adnan translated immensely complex query topologies into an interface that feels lightweight, deterministic, and joyous to work in daily. Our analyst onboarding velocity dropped from 3 weeks to under 3 days."</blockquote>
+<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-neutral-900 text-white font-bold flex items-center justify-center text-xs">MW</div><div><div class="text-xs font-bold text-neutral-900">Marcus Wright</div><div class="text-[11px] text-neutral-500">VP of Engineering &amp; Data, Nexus Corp</div></div></div>
+</div>
+</section>
+</article>
+<nav class="mt-16 pt-8 border-t border-neutral-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+<button type="button" onclick="goTo('works')" class="text-xs font-mono text-neutral-500 hover:text-neutral-900 flex items-center gap-1.5 transition-colors"><span>←</span> All Case Studies</button>
+<button type="button" onclick="toast('Next case study coming soon')" class="group flex items-center gap-3 p-3 px-5 rounded-full bg-neutral-50 hover:bg-neutral-100 border border-neutral-200/80 transition-all">
+<div class="text-right"><div class="text-[10px] font-mono uppercase text-neutral-400">Next Case Study</div><div class="text-xs font-bold text-neutral-900 group-hover:text-emerald-700 transition-colors">Synapse AI — Generative Playground</div></div>
+<div class="w-7 h-7 rounded-full bg-white flex items-center justify-center border border-neutral-200 text-neutral-700 group-hover:translate-x-0.5 transition-transform">→</div>
+</button>
+</nav>
+</main>
+</section>
+
+<!-- PAGE: Writing (list) -->
+<section id="page-writing" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+<main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+<section class="w-full bg-white rounded-[36px] card-shadow border border-white/60 p-8 sm:p-12 md:p-14 relative overflow-hidden">
+<div class="max-w-2xl mb-8">
+<h1 class="text-2xl sm:text-3xl md:text-[32px] font-bold text-neutral-950 tracking-tight leading-tight">Writing &amp; Thoughts.</h1>
+<p class="mt-2.5 text-neutral-500 text-sm sm:text-base leading-relaxed">Reflections on design craft, non-deterministic AI interfaces, and engineering scalable digital systems.</p>
+</div>
+<div class="flex flex-wrap items-center gap-2 pb-6 border-b border-neutral-100">
+<button type="button" onclick="updateActiveStates()" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-neutral-900 text-white transition-all shadow-sm">All</button>
+<button type="button" onclick="toast('Filtering by category coming soon')" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200/80 hover:text-neutral-900 transition-colors">Design Systems</button>
+<button type="button" onclick="toast('Filtering by category coming soon')" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200/80 hover:text-neutral-900 transition-colors">AI &amp; Interaction</button>
+<button type="button" onclick="toast('Filtering by category coming soon')" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200/80 hover:text-neutral-900 transition-colors">Product Strategy</button>
+<button type="button" onclick="toast('Filtering by category coming soon')" class="px-3.5 py-1.5 rounded-full text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200/80 hover:text-neutral-900 transition-colors">Case Studies</button>
+</div>
+<div class="divide-y divide-neutral-100">
+
+<article onclick="goTo('article')" class="group py-6 first:pt-6 transition-all duration-200 hover:bg-neutral-50/70 -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-2xl cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-1.5">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">Oct 2024 · 6 min read</span>
+<div class="flex items-center space-x-2"><span class="text-[11px] font-medium text-amber-700 bg-amber-50/80 px-2 py-0.5 rounded-md border border-amber-200/40">Design Craft</span><span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">SaaS</span></div>
+</div>
+<div class="flex items-start justify-between gap-4">
+<div><h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Crafting Intentionality: The Role of Micro-Interactions in Modern SaaS</h2>
+<p class="mt-1 text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-2xl">Why the finest details in user feedback loops dictate product sentiment, emotional resonance, and long-term retention.</p></div>
+<div class="pt-1 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+</article>
+
+<article onclick="toast('Full article coming soon')" class="group py-6 transition-all duration-200 hover:bg-neutral-50/70 -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-2xl cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-1.5">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">Aug 2024 · 8 min read</span>
+<div class="flex items-center space-x-2"><span class="text-[11px] font-medium text-purple-700 bg-purple-50/80 px-2 py-0.5 rounded-md border border-purple-200/40">AI Product</span><span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">UX Research</span></div>
+</div>
+<div class="flex items-start justify-between gap-4">
+<div><h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Designing for Non-Deterministic AI Interfaces</h2>
+<p class="mt-1 text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-2xl">Mental models and UI paradigms when static user expectations collide with probabilistic, generative machine outputs.</p></div>
+<div class="pt-1 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+</article>
+
+<article onclick="toast('Full article coming soon')" class="group py-6 transition-all duration-200 hover:bg-neutral-50/70 -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-2xl cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-1.5">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">May 2024 · 5 min read</span>
+<div class="flex items-center space-x-2"><span class="text-[11px] font-medium text-sky-700 bg-sky-50/80 px-2 py-0.5 rounded-md border border-sky-200/40">Design Systems</span><span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">Engineering</span></div>
+</div>
+<div class="flex items-start justify-between gap-4">
+<div><h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">Atomic Tokens: Bridging the Figma-to-Production Chasm</h2>
+<p class="mt-1 text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-2xl">How structured semantic design token architecture completely eliminates drift between design prototypes and frontend components.</p></div>
+<div class="pt-1 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+</article>
+
+<article onclick="toast('Full article coming soon')" class="group py-6 last:pb-2 transition-all duration-200 hover:bg-neutral-50/70 -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-2xl cursor-pointer">
+<div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-1.5">
+<span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">Jan 2024 · 4 min read</span>
+<div class="flex items-center space-x-2"><span class="text-[11px] font-medium text-emerald-700 bg-emerald-50/80 px-2 py-0.5 rounded-md border border-emerald-200/40">B2B</span><span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">Info Architecture</span></div>
+</div>
+<div class="flex items-start justify-between gap-4">
+<div><h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">The Quiet Power of Restraint in Enterprise Tools</h2>
+<p class="mt-1 text-xs sm:text-sm text-neutral-500 leading-relaxed max-w-2xl">Designing mission-critical workflows where cognitive clarity, whitespace, and high data density must seamlessly coexist.</p></div>
+<div class="pt-1 text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></div>
+</div>
+</article>
+
+</div>
+</section>
+</main>
+</section>
+
+<!-- PAGE: Article detail (drills in from Writing) -->
+<section id="page-article" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 sm:px-6 pt-10 sm:pt-14 pb-16 relative z-10">
+<main class="w-full max-w-[880px] bg-white rounded-[36px] card-shadow-lg overflow-hidden my-auto">
+<div class="px-6 sm:px-12 md:px-16 lg:px-20 py-10 sm:py-14">
+<header class="flex flex-wrap items-center justify-between gap-4 pb-8 mb-8 border-b border-neutral-100">
+<button type="button" onclick="goTo('writing')" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-all group">
+<svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Back to Writing</span>
+</button>
+</header>
+<section class="max-w-3xl mx-auto space-y-6 mb-12">
+<div class="flex items-center gap-2 text-[11px] font-semibold tracking-wider text-neutral-400 uppercase">
+<time datetime="2024-10-24">October 24, 2024</time><span class="text-neutral-300">·</span><span>6 min read</span>
+</div>
+<h1 class="text-3xl sm:text-4xl md:text-[42px] leading-[1.18] font-bold tracking-tight text-neutral-900 font-sans">Crafting Intentionality: The Role of Micro-Interactions in Modern SaaS</h1>
+<p class="text-lg sm:text-xl text-neutral-600 leading-relaxed font-light">Why the finest details in user feedback loops dictate product sentiment, emotional resonance, and long-term retention.</p>
+<div class="pt-4 flex items-center gap-3.5 border-t border-neutral-100">
+<div class="w-11 h-11 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-950 text-white flex items-center justify-center font-medium text-sm shadow-sm ring-2 ring-white">AM</div>
+<div><div class="text-sm font-semibold text-neutral-900">Adnan F. Muhammad</div><div class="text-xs text-neutral-500">Product &amp; UI Systems Designer</div></div>
+</div>
+</section>
+<article class="max-w-3xl mx-auto space-y-8 text-[17px] leading-[1.78] text-neutral-700 font-normal">
+<p>When we evaluate software efficiency, we habitually lean on macro metrics: task completion intervals, click depths, and drop-off funnel analytics. However, user loyalty is infrequently generated solely by high-level routing. Instead, intuition and product elegance are felt in the transient milliseconds occurring between action and reaction.</p>
+<p>Every button press, form submission, and status toggle carries an implicit emotional promise. When an interface responds instantaneously with proportional weight, the user develops tactile confidence. Conversely, sluggish latency or harsh instantaneous frame shifts create cognitive friction, breaking the illusion of direct manipulation.</p>
+<blockquote class="my-10 pl-6 border-l-4 border-amber-500 py-2.5 bg-gradient-to-r from-amber-50/50 to-transparent rounded-r-2xl">
+<p class="text-xl sm:text-2xl font-serif italic text-neutral-900 leading-snug">"Details are not just visual varnish; they are the communicative syntax between system state and human cognition."</p>
+</blockquote>
+<p>In complex enterprise tooling, certainty is currency. Micro-interactions should never be treated as decorative novelties sprinkled on during polish sprints. They are deterministic signals that inform users their intent has been registered by the machine.</p>
+<h2 class="pt-6 text-2xl font-bold tracking-tight text-neutral-900 font-sans">The Psychology of Sensory Feedback</h2>
+<p>A high-fidelity micro-interaction comprises four interconnected phases. Disrupting any link in this sequence induces hesitation:</p>
+<ol class="space-y-4 my-6 pl-0 list-none">
+<li class="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/80 border border-neutral-100"><span class="font-mono text-xs font-bold text-amber-600 px-2.5 py-1 bg-amber-100/60 rounded-lg">01</span><div><strong class="font-semibold text-neutral-900 block text-base mb-0.5">Trigger</strong><span class="text-neutral-600 text-sm leading-normal">User intent initiating directly (pointer click, hover, keypress) or system-initiated states triggered by external streaming sockets.</span></div></li>
+<li class="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/80 border border-neutral-100"><span class="font-mono text-xs font-bold text-amber-600 px-2.5 py-1 bg-amber-100/60 rounded-lg">02</span><div><strong class="font-semibold text-neutral-900 block text-base mb-0.5">Feedback Rule</strong><span class="text-neutral-600 text-sm leading-normal">Instant visual acknowledgment (e.g., subtle scale down to 0.98 and micro background tint shift) executed well within the 16ms render frame budget.</span></div></li>
+<li class="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/80 border border-neutral-100"><span class="font-mono text-xs font-bold text-amber-600 px-2.5 py-1 bg-amber-100/60 rounded-lg">03</span><div><strong class="font-semibold text-neutral-900 block text-base mb-0.5">State Resolution</strong><span class="text-neutral-600 text-sm leading-normal">Asynchronous API tasks mapped to clear deterministic states with graceful, predictable fallbacks rather than unstyled blocking spinners.</span></div></li>
+<li class="flex items-start gap-4 p-4 rounded-2xl bg-neutral-50/80 border border-neutral-100"><span class="font-mono text-xs font-bold text-amber-600 px-2.5 py-1 bg-amber-100/60 rounded-lg">04</span><div><strong class="font-semibold text-neutral-900 block text-base mb-0.5">Persistence</strong><span class="text-neutral-600 text-sm leading-normal">Gentle deceleration settling curves that guide gaze naturally toward the succeeding phase of the user's workflow.</span></div></li>
+</ol>
+<div class="my-10 p-6 sm:p-7 bg-neutral-900 text-neutral-100 rounded-3xl shadow-xl">
+<div class="flex items-center justify-between pb-4 mb-5 border-b border-neutral-800">
+<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span class="text-xs font-mono font-medium tracking-wider uppercase text-neutral-400">Design Spec · State Progression</span></div>
+<span class="text-xs font-mono text-neutral-500">cubic-bezier(0.16, 1, 0.3, 1)</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+<div class="p-4 rounded-2xl bg-neutral-800/80 border border-neutral-700/60 flex flex-col justify-between h-28"><div class="text-[11px] font-mono uppercase text-neutral-400">01 / Rest State</div><div><div class="text-sm font-semibold text-white">Default Elevation</div><div class="text-xs text-neutral-400 mt-0.5">scale(1.0) · shadow-sm</div></div></div>
+<div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/40 flex flex-col justify-between h-28 relative overflow-hidden"><div class="text-[11px] font-mono uppercase text-amber-300">02 / Active Touch</div><div><div class="text-sm font-semibold text-amber-200">Compress &amp; Anchor</div><div class="text-xs text-amber-300/80 mt-0.5">scale(0.96) · 120ms</div></div></div>
+<div class="p-4 rounded-2xl bg-neutral-800/80 border border-neutral-700/60 flex flex-col justify-between h-28"><div class="text-[11px] font-mono uppercase text-neutral-400">03 / Spring Resolve</div><div><div class="text-sm font-semibold text-white">Haptic Release</div><div class="text-xs text-neutral-400 mt-0.5">overshoot(1.02) · 240ms</div></div></div>
+</div>
+</div>
+<h2 class="pt-6 text-2xl font-bold tracking-tight text-neutral-900 font-sans">Designing Restraint: When Not to Animate</h2>
+<p>The hallmark of sophisticated design craft is self-discipline. Unconstrained micro-interactions deteriorate into cognitive clutter. When an enterprise analyst executes twenty high-frequency bulk table operations a minute, playful bounce transitions will provoke frustration.</p>
+<p>Prioritize utilitarian velocity over decorative theater. The primary objective is to cultivate confidence in the software's capability, providing just enough sensory confirmation that the machine has fulfilled its duty seamlessly.</p>
+</article>
+<footer class="max-w-3xl mx-auto mt-14 pt-8 border-t border-neutral-100">
+<div class="flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<button type="button" onclick="toast('Thanks for the clap! 👏')" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-sm font-medium text-neutral-800 transition-colors"><span>👏</span><span>142 Claps</span></button>
+<button type="button" onclick="copyEmail(window.location.href)" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 hover:border-neutral-300 text-sm font-medium text-neutral-700 transition-colors"><svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg><span>Share</span></button>
+</div>
+<div class="text-xs text-neutral-400 italic">Written from San Francisco, CA</div>
+</div>
+<hr class="my-8 border-neutral-100">
+<button type="button" onclick="toast('Full article coming soon')" class="w-full text-left group p-5 sm:p-6 rounded-2xl bg-neutral-50/70 hover:bg-neutral-100/80 border border-neutral-100 transition-all cursor-pointer">
+<div class="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-400 font-semibold mb-1"><span>Up Next</span><span>AI Product · 8 min read</span></div>
+<div class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-600 transition-colors flex items-center justify-between mt-1"><span>Designing for Non-Deterministic AI Interfaces</span><span class="transform group-hover:translate-x-1.5 transition-transform text-neutral-400 group-hover:text-amber-600">→</span></div>
+</button>
+</footer>
+</div>
+</main>
+</section>
+
+<!-- PAGE: Playground (new — the menu referenced it but no content existed yet) -->
+<section id="page-playground" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+<main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+<section class="w-full bg-white rounded-[36px] card-shadow border border-white/60 p-8 sm:p-12 md:p-14 relative overflow-hidden">
+<div class="max-w-2xl mb-10">
+<h1 class="text-2xl sm:text-3xl md:text-[32px] font-bold text-neutral-950 tracking-tight leading-tight">Playground.</h1>
+<p class="mt-2.5 text-neutral-500 text-sm sm:text-base leading-relaxed">Small interactive studies, tested outside client work. Most are still being built — starting with a live one below.</p>
+</div>
+
+<!-- Working demo: ties directly back to the "Crafting Intentionality" article -->
+<div class="p-6 sm:p-7 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 mb-6">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-base font-bold text-neutral-900">Micro-interaction, in one press</h2>
+<span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">Live</span>
+</div>
+<p class="text-[13px] text-neutral-600 leading-relaxed mb-5 max-w-lg">Hold the button down. The compress-and-release is the same trigger → feedback → resolution → persistence loop from the SaaS micro-interactions piece.</p>
+<button type="button" onclick="toast('Trigger → Feedback → Resolution → Persistence ✓')" class="px-6 py-3 bg-neutral-900 text-white text-sm font-semibold rounded-full shadow-sm transition-transform duration-150 ease-out active:scale-95 hover:bg-neutral-800">
+Press and hold
+</button>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<button type="button" onclick="toast('This experiment is still in progress')" class="text-left p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all">
+<div class="flex items-center justify-between mb-3">
+<div class="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-neutral-800 shadow-sm">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h10a4 4 0 004-4V9a2 2 0 00-2-2h-2.343M11 7.343L15.657 2.686a2 2 0 012.829 0l2.828 2.828a2 2 0 010 2.829L17 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-[11px] font-medium text-neutral-500 bg-white border border-neutral-200/80 px-2 py-0.5 rounded-full">In progress</span>
+</div>
+<h3 class="text-sm font-bold text-neutral-900 mb-1">Generative Palette Tool</h3>
+<p class="text-xs text-neutral-600 leading-relaxed">Type a mood, get a token-ready color system back.</p>
+</button>
+<button type="button" onclick="toast('This experiment is still in progress')" class="text-left p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all">
+<div class="flex items-center justify-between mb-3">
+<div class="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-neutral-800 shadow-sm">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<span class="text-[11px] font-medium text-neutral-500 bg-white border border-neutral-200/80 px-2 py-0.5 rounded-full">In progress</span>
+</div>
+<h3 class="text-sm font-bold text-neutral-900 mb-1">Cursor Trail Study</h3>
+<p class="text-xs text-neutral-600 leading-relaxed">A small look at motion that follows intent instead of decorating it.</p>
+</button>
+</div>
+</section>
+</main>
+</section>
+
+<!-- PAGE: Contacts (new — the menu referenced it but no content existed yet) -->
+<section id="page-contacts" class="app-page hidden flex flex-col items-center min-h-screen w-full px-4 py-8 sm:px-8 sm:py-12 md:px-12 relative z-10">
+<main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+<section class="w-full bg-white rounded-[36px] card-shadow border border-white/60 p-8 sm:p-12 md:p-14 relative overflow-hidden">
+<header class="flex items-center pb-6 mb-6 border-b border-neutral-100">
+<button type="button" onclick="goTo(previousPage)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-all group">
+<svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Back</span>
+</button>
+</header>
+<div class="max-w-2xl mb-10">
+<h1 class="text-2xl sm:text-3xl md:text-[32px] font-bold text-neutral-950 tracking-tight leading-tight">Let's talk.</h1>
+<p class="mt-2.5 text-neutral-500 text-sm sm:text-base leading-relaxed max-w-lg">Ambitious SaaS platform, AI product, or design system in mind? The fastest way in is email — I read every one.</p>
+</div>
+
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 mb-6">
+<div>
+<span class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Email</span>
+<span class="text-lg font-semibold text-neutral-900">hello@adnanmuhammad.com</span>
+</div>
+<button type="button" onclick="copyEmail('hello@adnanmuhammad.com')" class="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm whitespace-nowrap">
+Copy email
+</button>
+</div>
+
+<div class="flex flex-wrap gap-2.5">
+<button type="button" onclick="toast('Add your LinkedIn link here')" class="px-4 py-2 rounded-full bg-white border border-neutral-200 text-neutral-700 text-[13px] font-medium hover:border-neutral-300 transition-colors">LinkedIn</button>
+<button type="button" onclick="toast('Add your X / Twitter link here')" class="px-4 py-2 rounded-full bg-white border border-neutral-200 text-neutral-700 text-[13px] font-medium hover:border-neutral-300 transition-colors">X (Twitter)</button>
+<button type="button" onclick="toast('Add your Dribbble link here')" class="px-4 py-2 rounded-full bg-white border border-neutral-200 text-neutral-700 text-[13px] font-medium hover:border-neutral-300 transition-colors">Dribbble</button>
+</div>
+
+<p class="mt-8 text-xs text-neutral-400 italic">Replace the email above and wire up the social buttons with your real links.</p>
+</section>
+</main>
+</section>
+
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Persistent floating navigation dock -->
+<footer class="fixed bottom-6 z-50 flex justify-center w-full px-4 pointer-events-none">
+<nav class="pointer-events-auto bg-neutral-950/95 backdrop-blur-md text-white px-3 py-2 rounded-full flex items-center gap-1 sm:gap-2 shadow-2xl border border-white/10">
+<div class="flex items-center text-[13px] font-medium text-neutral-300">
+<button type="button" data-dock-link data-group="about" onclick="goTo(lastAboutPage)" class="px-3.5 py-1.5 rounded-full transition-colors">About</button>
+<button type="button" data-dock-link data-group="writing" onclick="goTo('writing')" class="px-3.5 py-1.5 rounded-full transition-colors">Writing</button>
+<button type="button" data-dock-link data-group="playground" onclick="goTo('playground')" class="px-3.5 py-1.5 rounded-full transition-colors whitespace-nowrap">Playground</button>
+</div>
+<button type="button" onclick="goTo('contacts')" class="bg-white hover:bg-neutral-100 text-neutral-950 text-[12.5px] font-semibold px-4 py-1.5 rounded-full transition-colors shadow-sm ml-1">Contacts</button>
+</nav>
+</footer>
+
+<script>
+  const GROUPS = {
+    profile: 'about', experience: 'about', works: 'about', 'case-study': 'about',
+    writing: 'writing', article: 'writing',
+    playground: 'playground',
+    contacts: 'contacts'
+  };
+  const TITLES = {
+    profile: 'Adnan F. Muhammad — Profile',
+    experience: 'Adnan F. Muhammad — Experience',
+    works: 'Adnan F. Muhammad — Works',
+    'case-study': 'Nexus Analytics Case Study — Adnan F. Muhammad',
+    writing: 'Writing — Adnan F. Muhammad',
+    article: 'Crafting Intentionality — Adnan F. Muhammad',
+    playground: 'Playground — Adnan F. Muhammad',
+    contacts: 'Contacts — Adnan F. Muhammad'
+  };
+
+  let currentPage = 'profile';
+  let lastAboutPage = 'profile';
+  let previousPage = 'profile';
+
+  function goTo(pageId){
+    const target = document.getElementById('page-' + pageId);
+    if(!target) return;
+    if(pageId !== currentPage) previousPage = currentPage;
+    document.querySelectorAll('.app-page').forEach(el => el.classList.add('hidden'));
+    target.classList.remove('hidden');
+    currentPage = pageId;
+    if(GROUPS[pageId] === 'about') lastAboutPage = pageId;
+    updateActiveStates();
+    document.title = TITLES[pageId] || 'Adnan F. Muhammad';
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  function updateActiveStates(){
+    const group = GROUPS[currentPage];
+    document.querySelectorAll('[data-dock-link]').forEach(el => {
+      el.classList.toggle('dock-active', el.dataset.group === group);
+    });
+    document.querySelectorAll('[data-tri-tab]').forEach(el => {
+      const active = el.dataset.goto === currentPage;
+      el.classList.toggle('tri-active', active);
+      el.classList.toggle('tri-inactive', !active);
+    });
+  }
+
+  let toastTimer;
+  function toast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('toast-show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('toast-show'), 2200);
+  }
+
+  function copyEmail(email){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(email).then(() => toast('Email copied to clipboard')).catch(() => toast(email));
+    } else {
+      toast(email);
+    }
+  }
+
+  function updateClock(){
+    const el = document.getElementById('live-time');
+    if(!el) return;
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    const t = new Date(utc + 3600000 * 7);
+    const p = n => String(n).padStart(2, '0');
+    el.textContent = `${p(t.getHours())}:${p(t.getMinutes())}:${p(t.getSeconds())} WIB`;
+  }
+  setInterval(updateClock, 1000);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateClock();
+    updateActiveStates();
+  });
+</script>
+</body>
+</html>

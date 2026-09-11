@@ -1,0 +1,49 @@
+---
+// Work card for the Works grid — content comes from the Keystatic "works" collection.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  work: CollectionEntry<'works'>;
+}
+
+const { work } = Astro.props;
+const d = work.data;
+
+const metricColors: Record<string, string> = {
+  emerald: 'text-emerald-700 bg-emerald-50/80 border-emerald-200/40',
+  purple: 'text-purple-700 bg-purple-50/80 border-purple-200/40',
+  teal: 'text-teal-700 bg-teal-50/80 border-teal-200/40',
+  amber: 'text-amber-700 bg-amber-50/80 border-amber-200/40',
+};
+---
+<a
+  href={`/works/${work.id}`}
+  class="group rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-200 p-5 sm:p-6 flex flex-col cursor-pointer"
+>
+  {d.thumbnail && (
+    <img
+      src={d.thumbnail}
+      alt={`${d.title} product screenshot`}
+      class="w-full aspect-video object-cover rounded-xl mb-4 sm:mb-5"
+      loading="lazy"
+    />
+  )}
+  <div class="flex items-start justify-between gap-3 mb-3">
+    <span class="text-xs font-medium text-neutral-400 tracking-wide uppercase">{d.category}</span>
+    <div class="text-neutral-300 group-hover:text-neutral-900 group-hover:translate-x-1 transition-all flex-shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+      </svg>
+    </div>
+  </div>
+  <h2 class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-900 transition-colors tracking-tight">{d.title}</h2>
+  <p class="mt-1.5 mb-5 text-[13px] text-neutral-500 leading-relaxed flex-1">{d.description}</p>
+  <div class="pt-4 border-t border-neutral-200/60 flex flex-wrap items-center gap-2">
+    {d.metric && (
+      <span class={`text-[11px] font-medium px-2 py-0.5 rounded-md border ${metricColors[d.metricColor]}`}>{d.metric}</span>
+    )}
+    {d.badge && (
+      <span class="text-[11px] font-medium text-neutral-600 bg-neutral-100 px-2 py-0.5 rounded-md">{d.badge}</span>
+    )}
+  </div>
+</a>

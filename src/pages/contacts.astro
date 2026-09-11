@@ -1,0 +1,62 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const entry = await getEntry('contacts', 'contacts');
+const d = entry?.data;
+const heading = d?.heading ?? "Let's talk.";
+const description = d?.description ?? '';
+const email = d?.email ?? '';
+const socials = d?.socials ?? [];
+---
+<Base title="Contacts — Adnan F. Muhammad">
+  <main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+    <section class="w-full bg-white rounded-[36px] card-shadow border border-white/60 p-8 sm:p-12 md:p-14 relative overflow-hidden">
+      <header class="flex items-center pb-6 mb-6 border-b border-neutral-100">
+        <button
+          type="button"
+          onclick="history.back()"
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-all group"
+        >
+          <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span>Back</span>
+        </button>
+      </header>
+      <div class="max-w-2xl mb-10">
+        <h1 class="text-2xl sm:text-3xl md:text-[32px] font-bold text-neutral-950 tracking-tight leading-tight">{heading}</h1>
+        <p class="mt-2.5 text-neutral-500 text-sm sm:text-base leading-relaxed max-w-lg">{description}</p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 mb-6">
+        <div>
+          <span class="block text-[11px] font-mono uppercase tracking-wider text-neutral-400 mb-1">Email</span>
+          <span class="text-lg font-semibold text-neutral-900">{email}</span>
+        </div>
+        <button
+          type="button"
+          onclick={`copyEmail('${email}')`}
+          class="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm whitespace-nowrap"
+        >Copy email</button>
+      </div>
+
+      <div class="flex flex-wrap gap-2.5">
+        {socials.map((social) =>
+          social.url ? (
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-4 py-2 rounded-full bg-white border border-neutral-200 text-neutral-700 text-[13px] font-medium hover:border-neutral-300 transition-colors"
+            >{social.label}</a>
+          ) : (
+            <button
+              type="button"
+              onclick={`toast('Add your ${social.label} link here')`}
+              class="px-4 py-2 rounded-full bg-white border border-neutral-200 text-neutral-700 text-[13px] font-medium hover:border-neutral-300 transition-colors"
+            >{social.label}</button>
+          )
+        )}
+      </div>
+    </section>
+  </main>
+</Base>

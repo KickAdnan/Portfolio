@@ -1,0 +1,31 @@
+---
+// Shared card chrome for the three "About" pages (Profile / Experience / Works):
+// outer frame + centered tab navigation + white inner card.
+interface Props {
+  active: 'profile' | 'experience' | 'works';
+}
+
+const { active } = Astro.props;
+const tabs = [
+  { id: 'profile', label: 'Profile', href: '/' },
+  { id: 'experience', label: 'Experience', href: '/experience' },
+  { id: 'works', label: 'Works', href: '/works' },
+] as const;
+---
+<div class="w-full bg-[#f0f1f2] rounded-[36px] p-0.5 shadow-2xl shadow-black/10 overflow-hidden border border-white/40">
+  <header class="flex justify-center items-center pt-2 pb-0 px-6">
+    <nav class="flex items-center space-x-1 text-[13px] font-medium" data-purpose="card-tab-navigation" aria-label="About sections">
+      {tabs.map((tab) => (
+        <a
+          href={tab.href}
+          class:list={['px-5 py-2 rounded-t-xl transition-colors', active === tab.id ? 'tri-active' : 'tri-inactive']}
+        >
+          {tab.label}
+        </a>
+      ))}
+    </nav>
+  </header>
+  <article class="bg-white rounded-[32px] p-8 sm:p-12 md:p-14 shadow-sm min-h-[580px] flex flex-col justify-between">
+    <slot />
+  </article>
+</div>

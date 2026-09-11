@@ -1,0 +1,83 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import AboutCard from '../components/AboutCard.astro';
+
+const entry = await getEntry('experience', 'experience');
+const d = entry?.data;
+const heading = d?.heading ?? 'Work Experience & History';
+const subtitle = d?.subtitle ?? '';
+const jobs = d?.jobs ?? [];
+
+const logoColors: Record<string, string> = {
+  dark: 'bg-neutral-900',
+  amber: 'bg-amber-500',
+  slate: 'bg-neutral-700',
+};
+---
+<Base title="Adnan F. Muhammad — Experience">
+  <main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+    <AboutCard active="experience">
+      <div class="flex flex-col space-y-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-neutral-200/60">
+          <div>
+            <h1 class="text-2xl sm:text-[28px] font-bold tracking-tight text-neutral-900">{heading}</h1>
+            <p class="text-[13.5px] sm:text-[14px] text-neutral-500 mt-1 max-w-xl">{subtitle}</p>
+          </div>
+          <div class="flex items-center space-x-3 flex-shrink-0">
+            <button
+              type="button"
+              onclick="toast('Resume link coming soon — plug in your PDF here.')"
+              class="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm flex items-center space-x-1.5"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              <span>Download Resume</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          {jobs.map((job) => (
+            <div class="p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all duration-150">
+              <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-3">
+                <div class="flex items-center space-x-3">
+                  <div class={`w-10 h-10 rounded-xl text-white flex items-center justify-center font-bold text-sm shadow-sm ${logoColors[job.logoColor] ?? 'bg-neutral-900'}`}>{job.initials}</div>
+                  <div>
+                    <div class="flex items-center space-x-2">
+                      <h3 class="font-bold text-neutral-900 text-[16px]">{job.role}</h3>
+                      {job.current && (
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-semibold">Current</span>
+                      )}
+                    </div>
+                    <p class="text-[13px] text-neutral-500 font-medium">{job.company}{job.employmentType ? ` • ${job.employmentType}` : ''}</p>
+                  </div>
+                </div>
+                {job.period && (
+                  <span class="text-[12.5px] font-mono font-medium text-neutral-500 bg-white px-3 py-1 rounded-full border border-neutral-200/60">{job.period}</span>
+                )}
+              </div>
+              <p class="text-[13.5px] text-neutral-600 leading-relaxed mb-4">{job.description}</p>
+              {job.highlights.length > 0 && (
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px] text-neutral-600 mb-4">
+                  {job.highlights.map((highlight) => (
+                    <div class="flex items-start space-x-2">
+                      <span class={`font-bold ${job.current ? 'text-emerald-600' : 'text-amber-600'}`}>•</span>
+                      <span>{highlight}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {job.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                  {job.tags.map((tag) => (
+                    <span class="px-2.5 py-1 rounded-md bg-white border border-neutral-200/70 text-neutral-700 text-[11.5px] font-medium">{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </AboutCard>
+  </main>
+</Base>

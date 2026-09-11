@@ -1,0 +1,151 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('writing')).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, next: posts[(i + 1) % posts.length] },
+  }));
+}
+
+type Props = { post: CollectionEntry<'writing'>; next: CollectionEntry<'writing'> };
+
+const { post, next } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+const fmtDate = d.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const isoDate = d.date.toISOString().slice(0, 10);
+
+const profileEntry = await getEntry('profile', 'profile');
+const authorRole = profileEntry?.data.authorRole ?? 'Product & UI Systems Designer';
+const authorName = profileEntry?.data.name ?? 'Adnan F. Muhammad';
+const articleLocation = profileEntry?.data.articleLocation ?? 'Written from San Francisco, CA';
+const authorInitials = authorName.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase();
+---
+<Base title={`${d.title} — ${authorName}`}>
+  <main class="w-full max-w-[880px] bg-white rounded-[36px] card-shadow-lg overflow-hidden my-auto">
+    <div class="px-6 sm:px-12 md:px-16 lg:px-20 py-10 sm:py-14">
+      <header class="flex flex-wrap items-center justify-between gap-4 pb-8 mb-8 border-b border-neutral-100">
+        <a
+          href="/writing"
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-xs font-medium text-neutral-600 hover:text-neutral-900 transition-all group"
+        >
+          <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+          <span>Back to Writing</span>
+        </a>
+      </header>
+
+      <section class="max-w-3xl mx-auto space-y-6 mb-12">
+        <div class="flex items-center gap-2 text-[11px] font-semibold tracking-wider text-neutral-400 uppercase">
+          <time datetime={isoDate}>{fmtDate}</time><span class="text-neutral-300">·</span><span>{d.readTime}</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl md:text-[42px] leading-[1.18] font-bold tracking-tight text-neutral-900 font-sans">{d.title}</h1>
+        {d.description && (
+          <p class="text-lg sm:text-xl text-neutral-600 leading-relaxed font-light">{d.description}</p>
+        )}
+        <div class="pt-4 flex items-center gap-3.5 border-t border-neutral-100">
+          <div class="w-11 h-11 rounded-full bg-gradient-to-br from-neutral-800 to-neutral-950 text-white flex items-center justify-center font-medium text-sm shadow-sm ring-2 ring-white">{authorInitials}</div>
+          <div>
+            <div class="text-sm font-semibold text-neutral-900">{authorName}</div>
+            <div class="text-xs text-neutral-500">{authorRole}</div>
+          </div>
+        </div>
+      </section>
+
+      <article class="article-body max-w-3xl mx-auto">
+        <Content />
+      </article>
+
+      <footer class="max-w-3xl mx-auto mt-14 pt-8 border-t border-neutral-100">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              onclick="toast('Thanks for the clap! 👏')"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-neutral-100 hover:bg-neutral-200/80 text-sm font-medium text-neutral-800 transition-colors"
+            ><span>👏</span><span>142 Claps</span></button>
+            <button
+              type="button"
+              onclick="copyText(window.location.href)"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-neutral-200 hover:border-neutral-300 text-sm font-medium text-neutral-700 transition-colors"
+            >
+              <svg class="w-4 h-4 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+              <span>Share</span>
+            </button>
+          </div>
+          <div class="text-xs text-neutral-400 italic">{articleLocation}</div>
+        </div>
+        <hr class="my-8 border-neutral-100" />
+        <a
+          href={`/writing/${next.id}`}
+          class="block group p-5 sm:p-6 rounded-2xl bg-neutral-50/70 hover:bg-neutral-100/80 border border-neutral-100 transition-all cursor-pointer"
+        >
+          <div class="flex items-center justify-between text-xs uppercase tracking-wider text-neutral-400 font-semibold mb-1">
+            <span>Up Next</span>
+            <span>{next.data.readTime}</span>
+          </div>
+          <div class="text-base sm:text-lg font-semibold text-neutral-900 group-hover:text-amber-600 transition-colors flex items-center justify-between mt-1">
+            <span>{next.data.title}</span>
+            <span class="transform group-hover:translate-x-1.5 transition-transform text-neutral-400 group-hover:text-amber-600">→</span>
+          </div>
+        </a>
+      </footer>
+    </div>
+  </main>
+</Base>
+
+<style is:global>
+  /* Prose styling for markdoc article content (no typography plugin on the CDN build) */
+  .article-body { color: #404040; font-size: 17px; line-height: 1.78; }
+  .article-body > * + * { margin-top: 1.6rem; }
+  .article-body h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: #171717;
+    padding-top: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  .article-body strong { color: #171717; font-weight: 600; }
+  .article-body blockquote {
+    margin: 2.5rem 0;
+    padding: 0.625rem 0 0.625rem 1.5rem;
+    border-left: 4px solid #f59e0b;
+    background: linear-gradient(to right, rgba(255, 251, 235, 0.5), transparent);
+    border-radius: 0 1rem 1rem 0;
+  }
+  .article-body blockquote p {
+    margin: 0;
+    font-family: 'Newsreader', Georgia, serif;
+    font-style: italic;
+    color: #171717;
+    font-size: 1.35rem;
+    line-height: 1.4;
+  }
+  .article-body ol, .article-body ul { padding-left: 0; list-style: none; }
+  .article-body ol > li, .article-body ul > li { margin-top: 1rem; padding-left: 1.5rem; position: relative; }
+  .article-body ul > li::marker { content: none; }
+  .article-body ul > li::before {
+    content: "";
+    position: absolute;
+    left: 0.35rem;
+    top: 0.72em;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 9999px;
+    background: #f59e0b;
+  }
+  .article-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82em;
+    background: #f5f5f5;
+    padding: 0.15em 0.4em;
+    border-radius: 0.375rem;
+  }
+  .article-body a { color: #d97706; text-decoration: underline; }
+</style>

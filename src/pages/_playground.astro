@@ -1,0 +1,60 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const entry = await getEntry('playground', 'playground');
+const d = entry?.data;
+const heading = d?.heading ?? 'Playground.';
+const description = d?.description ?? '';
+const demoTitle = d?.demoTitle ?? '';
+const demoDescription = d?.demoDescription ?? '';
+const demoButton = d?.demoButton ?? 'Press and hold';
+const experiments = d?.experiments ?? [];
+---
+<Base title="Playground — Adnan F. Muhammad">
+  <main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+    <section class="w-full bg-white rounded-[36px] card-shadow border border-white/60 p-8 sm:p-12 md:p-14 relative overflow-hidden">
+      <div class="max-w-2xl mb-10">
+        <h1 class="text-2xl sm:text-3xl md:text-[32px] font-bold text-neutral-950 tracking-tight leading-tight">{heading}</h1>
+        <p class="mt-2.5 text-neutral-500 text-sm sm:text-base leading-relaxed">{description}</p>
+      </div>
+
+      <!-- Working demo: ties directly back to the "Crafting Intentionality" article -->
+      <div class="p-6 sm:p-7 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-neutral-900">{demoTitle}</h2>
+          <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">Live</span>
+        </div>
+        <p class="text-[13px] text-neutral-600 leading-relaxed mb-5 max-w-lg">{demoDescription}</p>
+        <button
+          type="button"
+          onclick="toast('Trigger → Feedback → Resolution → Persistence ✓')"
+          class="px-6 py-3 bg-neutral-900 text-white text-sm font-semibold rounded-full shadow-sm transition-transform duration-150 ease-out active:scale-95 hover:bg-neutral-800"
+        >{demoButton}</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {experiments.map((experiment) => (
+          <button
+            type="button"
+            onclick="toast('This experiment is still in progress')"
+            class="text-left p-6 rounded-2xl border border-neutral-200/80 bg-neutral-50/60 hover:bg-neutral-50 transition-all"
+          >
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-9 h-9 rounded-xl bg-white border border-neutral-200 flex items-center justify-center text-neutral-800 shadow-sm">
+                {experiment.icon === 'palette' ? (
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h10a4 4 0 004-4V9a2 2 0 00-2-2h-2.343M11 7.343L15.657 2.686a2 2 0 012.829 0l2.828 2.828a2 2 0 010 2.829L17 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                ) : (
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                )}
+              </div>
+              <span class="text-[11px] font-medium text-neutral-500 bg-white border border-neutral-200/80 px-2 py-0.5 rounded-full">In progress</span>
+            </div>
+            <h3 class="text-sm font-bold text-neutral-900 mb-1">{experiment.title}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{experiment.description}</p>
+          </button>
+        ))}
+      </div>
+    </section>
+  </main>
+</Base>

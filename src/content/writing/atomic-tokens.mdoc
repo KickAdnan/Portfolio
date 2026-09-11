@@ -1,0 +1,16 @@
+---
+title: "Atomic Tokens: Bridging the Figma-to-Production Chasm"
+date: 2024-05-03
+readTime: 5 min read
+description: "How structured semantic design token architecture completely eliminates drift between design prototypes and frontend components."
+tags:
+  - Design Systems
+  - Engineering
+tagColor: sky
+---
+
+Every design system eventually confronts the same failure mode: the prototype and the product quietly diverge. A button radius changes in Figma, the code never hears about it, and six months later the "single source of truth" is two sources of truth pointing at each other.
+
+Semantic tokens end the drift. Instead of hardcoding values, both design and code consume the same named decisions — `surface-raised`, `accent-primary`, `radius-control` — resolved from one shared definition file. Change the definition, and Figma variables, the component library, and documentation all move together.
+
+The chasm was never about tooling. It was about naming: teams that agree on vocabulary ship coherence, and teams that don't ship exceptions.

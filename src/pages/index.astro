@@ -1,0 +1,89 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import AboutCard from '../components/AboutCard.astro';
+
+const entry = await getEntry('profile', 'profile');
+const p = entry?.data;
+const name = p?.name ?? 'Adnan F. Muhammad';
+const role = p?.role ?? 'UI/UX Designer';
+const avatar = p?.avatar ?? '';
+const availability = p?.availabilityLabel ?? 'Available for work';
+const tagline = p?.tagline ?? '';
+const bio = p?.description ?? '';
+const expertise = p?.expertise ?? [];
+---
+<Base title={`${name} — Profile`}>
+  <main class="w-full max-w-[880px] my-auto pt-4 pb-24">
+    <AboutCard active="profile">
+      <section class="flex flex-col sm:flex-row justify-between items-start gap-4" data-purpose="profile-header">
+        <div class="flex flex-col">
+          <div class="relative w-16 h-16 rounded-full overflow-hidden p-0.5 bg-gradient-to-b from-sky-300 via-amber-200 to-amber-500 shadow-inner mb-5">
+            <img alt={`${name} portrait`} class="w-full h-full object-cover rounded-full" src={avatar} />
+          </div>
+          <span class="text-[13px] font-medium text-neutral-500 tracking-wide mb-1">{role}</span>
+          <h1 class="text-2xl sm:text-[26px] font-bold tracking-tight text-neutral-900">{name}</h1>
+        </div>
+        <div class="flex items-center space-x-2 pt-1">
+          <div
+            class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-neutral-100/80 border border-neutral-200/60 text-[12px] font-medium text-neutral-700"
+            data-purpose="availability-status"
+          >
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>{availability}</span>
+          </div>
+          <span
+            id="live-time"
+            class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full bg-neutral-100/80 border border-neutral-200/60 text-[12px] font-mono font-medium text-neutral-600"
+          >--:--:-- WIB</span>
+        </div>
+      </section>
+
+      <div class="h-20 sm:h-28"></div>
+
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end" data-purpose="profile-overview">
+        <div class="lg:col-span-8 flex flex-col space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold leading-snug tracking-tight text-neutral-900 max-w-xl whitespace-pre-line">{tagline}</h2>
+          <p class="text-[13.5px] sm:text-[14px] leading-relaxed text-neutral-500 max-w-lg pt-1 font-normal">{bio}</p>
+          <div class="flex items-center space-x-3 pt-3">
+            <a
+              href="/contacts"
+              class="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm"
+            >Get in touch</a>
+            <button
+              type="button"
+              onclick="toast('Resume link coming soon — plug in your PDF here.')"
+              class="px-5 py-2.5 bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-200 text-[13px] font-medium rounded-full transition-all duration-150 shadow-sm"
+            >My CV</button>
+          </div>
+        </div>
+        <div class="lg:col-span-4 flex flex-col justify-end space-y-3.5 pb-1">
+          <span class="text-[13px] font-normal text-neutral-400 block mb-1">Expertise</span>
+          {expertise.map((item) => (
+            <div class="flex items-center space-x-3 text-neutral-900 font-semibold text-[14px]">
+              {item.icon === 'dots' && (
+                <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                  <circle cx="3" cy="4" r="1.5"></circle><circle cx="8" cy="4" r="1.5"></circle><circle cx="13" cy="4" r="1.5"></circle>
+                  <circle cx="5.5" cy="10" r="1.5"></circle><circle cx="10.5" cy="10" r="1.5"></circle>
+                </svg>
+              )}
+              {item.icon === 'sparkle' && (
+                <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 16 16">
+                  <path d="M8 2v12M2 8h12M4.5 4.5l7 7M11.5 4.5l-7 7" stroke-dasharray="1 3" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              )}
+              {item.icon === 'grid' && (
+                <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
+                  <circle cx="3" cy="3" r="1.2"></circle><circle cx="8" cy="3" r="1.2"></circle><circle cx="13" cy="3" r="1.2"></circle>
+                  <circle cx="3" cy="8" r="1.2"></circle><circle cx="13" cy="8" r="1.2"></circle>
+                  <circle cx="3" cy="13" r="1.2"></circle><circle cx="8" cy="13" r="1.2"></circle><circle cx="13" cy="13" r="1.2"></circle>
+                </svg>
+              )}
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    </AboutCard>
+  </main>
+</Base>
