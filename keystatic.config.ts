@@ -2,9 +2,10 @@ import { config, fields, collection, singleton } from '@keystatic/core';
 
 export default config({
   storage: {
-    // 'local' = file ditulis langsung ke repo saat development.
-    // Untuk production, ganti ke: { kind: 'github', repo: 'username/portfolio' }
-    kind: 'local',
+    // GitHub mode: edit di admin langsung di-commit ke GitHub.
+    // Butuh GitHub App + env: KEYSTATIC_GITHUB_CLIENT_ID, KEYSTATIC_GITHUB_CLIENT_SECRET, KEYSTATIC_SECRET.
+    kind: 'github',
+    repo: 'KickAdnan/portfolio',
   },
   collections: {
     works: collection({
