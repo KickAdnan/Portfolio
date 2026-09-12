@@ -76,7 +76,6 @@ const profile = defineCollection({
       .array(
         z.object({
           label: z.string(),
-          icon: z.enum(['dots', 'sparkle', 'grid']).default('dots'),
         })
       )
       .default([]),

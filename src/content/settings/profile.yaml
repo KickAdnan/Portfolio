@@ -8,8 +8,5 @@ authorRole: Product & UI Systems Designer
 articleLocation: Written from San Francisco, CA
 expertise:
   - label: SaaS
-    icon: dots
   - label: AI Product
-    icon: sparkle
   - label: B2B
-    icon: grid

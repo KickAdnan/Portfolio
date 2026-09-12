@@ -83,15 +83,6 @@ export default config({
         expertise: fields.array(
           fields.object({
             label: fields.text({ label: 'Label' }),
-            icon: fields.select({
-              label: 'Icon',
-              options: [
-                { label: 'Dots', value: 'dots' },
-                { label: 'Sparkle', value: 'sparkle' },
-                { label: 'Grid', value: 'grid' },
-              ],
-              defaultValue: 'dots',
-            }),
           }),
           { label: 'Expertise' }
         ),
