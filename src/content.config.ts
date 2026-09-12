@@ -92,13 +92,12 @@ const experience = defineCollection({
     jobs: z
       .array(
         z.object({
-          initials: z.string(),
+          logo: z.string().default(''),
           role: z.string(),
           company: z.string(),
           employmentType: z.string().default(''),
           period: z.string().default(''),
           current: z.boolean().default(false),
-          logoColor: z.enum(['dark', 'amber', 'slate']).default('dark'),
           description: z.string().default(''),
           highlights: z.array(z.string()).default([]),
           tags: z.array(z.string()).default([]),

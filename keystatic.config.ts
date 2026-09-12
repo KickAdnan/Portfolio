@@ -76,7 +76,11 @@ export default config({
       schema: {
         name: fields.text({ label: 'Name' }),
         role: fields.text({ label: 'Role' }),
-        avatar: fields.url({ label: 'Avatar URL' }),
+        avatar: fields.image({
+          label: 'Avatar',
+          directory: 'public/images',
+          publicPath: '/images/',
+        }),
         availabilityLabel: fields.text({ label: 'Availability badge text' }),
         tagline: fields.text({ label: 'Tagline (new line = new line)', multiline: true }),
         description: fields.text({ label: 'Short bio', multiline: true }),
@@ -98,21 +102,16 @@ export default config({
         subtitle: fields.text({ label: 'Subtitle', multiline: true }),
         jobs: fields.array(
           fields.object({
-            initials: fields.text({ label: 'Company initials (logo)' }),
+            logo: fields.image({
+              label: 'Company logo (square, min 80x80)',
+              directory: 'public/images',
+              publicPath: '/images/',
+            }),
             role: fields.text({ label: 'Job title' }),
             company: fields.text({ label: 'Company' }),
             employmentType: fields.text({ label: 'Employment type' }),
             period: fields.text({ label: 'Period' }),
             current: fields.checkbox({ label: 'Current job (shows "Current" badge)', defaultValue: false }),
-            logoColor: fields.select({
-              label: 'Logo color',
-              options: [
-                { label: 'Dark', value: 'dark' },
-                { label: 'Amber', value: 'amber' },
-                { label: 'Slate', value: 'slate' },
-              ],
-              defaultValue: 'dark',
-            }),
             description: fields.text({ label: 'Description', multiline: true }),
             highlights: fields.array(fields.text({ label: 'Highlight' }), { label: 'Highlights' }),
             tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags' }),
