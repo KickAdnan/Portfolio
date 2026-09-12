@@ -163,4 +163,4 @@ const contacts = defineCollection({
   }),
 });
 
-export const collections = { works, writing, profile, experience, worksPage, writingPage, playground, contacts };
+export const collections = { works, writing, profile, experience, 'works-page': worksPage, 'writing-page': writingPage, playground, contacts };
